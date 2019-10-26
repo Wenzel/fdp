@@ -1,0 +1,13 @@
+[package]
+name = "fdp"
+version = "0.1.0"
+authors = ["Mathieu Tarral <mathieu.tarral@protonmail.com>"]
+edition = "2018"
+repository = "https://github.com/Wenzel/fdp"
+readme = "README.md"
+keywords = ["FDP", "Introspection", "VirtualBox"]
+description = "Rust bindings for FDP (Fast Debugging Protocol)"
+license = "GPL-3.0-only"
+
+[dependencies]
+fdp-sys = { git = "https://github.com/Wenzel/fdp-sys.git" }
