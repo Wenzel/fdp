@@ -1,6 +1,6 @@
 # fdp
 
-[![Build Status](https://travis-ci.com/Wenzel/fdp.svg?branch=master)](https://travis-ci.com/Wenzel/fdp)
+![](https://github.com/Wenzel/fdp/workflows/Build/badge.svg)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
 > Rust bindings for FDP library
