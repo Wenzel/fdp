@@ -11,3 +11,4 @@ license = "GPL-3.0-only"
 
 [dependencies]
 fdp-sys = "0.1.0"
+custom_error = "1.7.1"

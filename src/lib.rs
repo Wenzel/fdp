@@ -1,7 +1,11 @@
 use std::ffi::CString;
 
-use fdp_sys::{FDP_SHM, FDP_CreateSHM, FDP_Init};
+use fdp_sys::{FDP_SHM, FDP_CreateSHM, FDP_Init, FDP_Pause, FDP_Resume};
+use custom_error::custom_error;
 
+
+// Define simple FDP error
+custom_error!{pub FDPError{} = "FDP error."}
 
 #[derive(Debug)]
 pub struct FDP {
@@ -22,6 +26,20 @@ impl FDP {
         }
         FDP {
             shm,
+        }
+    }
+
+    pub fn pause(&self) -> Result<(), FDPError> {
+        match unsafe { FDP_Pause(self.shm) } {
+            false => Err(FDPError{}),
+            true => Ok(()),
+        }
+    }
+
+    pub fn resume(&self) -> Result<(), FDPError> {
+        match unsafe { FDP_Resume(self.shm) } {
+            false => Err(FDPError{}),
+            true => Ok(()),
         }
     }
 }
