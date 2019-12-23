@@ -1,6 +1,6 @@
 use std::ffi::CString;
 
-use fdp_sys::{FDP_SHM, FDP_CreateSHM};
+use fdp_sys::{FDP_SHM, FDP_CreateSHM, FDP_Init};
 
 
 #[derive(Debug)]
@@ -15,6 +15,11 @@ impl FDP {
         let shm = unsafe {
             FDP_CreateSHM(c_vm_name.into_raw())
         };
+        // init FDP
+        let res = unsafe { FDP_Init(shm) };
+        if res == false {
+            panic!("Failed to init FDP");
+        }
         FDP {
             shm,
         }
