@@ -10,4 +10,4 @@ description = "Rust bindings for FDP (Fast Debugging Protocol)"
 license = "GPL-3.0-only"
 
 [dependencies]
-fdp-sys = { git = "https://github.com/Wenzel/fdp-sys.git" }
+fdp-sys = "0.1.0"
