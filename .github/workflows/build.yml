@@ -1,0 +1,23 @@
+name: Build
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Clone Icebox repository
+      run: git clone https://github.com/thalium/icebox --depth 1
+    - name: Compile and install FDP library
+      run: |
+        cd icebox/src/FDP
+        gcc -shared -fPIC FDP.c -o libFDP.so
+        sudo cp include/* /usr/local/include
+        sudo cp libFDP.so /usr/local/lib
+    - name: Build
+      run: cargo build
+    - name: Run tests
+      run: cargo test
