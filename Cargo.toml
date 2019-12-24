@@ -10,5 +10,6 @@ description = "Rust bindings for FDP (Fast Debugging Protocol)"
 license = "GPL-3.0-only"
 
 [dependencies]
+log = "0.4.8"
 fdp-sys = "0.1.0"
 custom_error = "1.7.1"
