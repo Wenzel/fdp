@@ -3,9 +3,13 @@ extern crate log;
 
 use std::error::Error;
 use std::ffi::CString;
+use std::convert::TryInto;
 
 use custom_error::custom_error;
-use fdp_sys::{FDP_CreateSHM, FDP_Init, FDP_Pause, FDP_Resume, FDP_SHM};
+use fdp_sys::{
+    FDP_CreateSHM, FDP_Init, FDP_Pause, FDP_Resume, FDP_SHM,
+    FDP_ReadPhysicalMemory
+};
 
 
 // Define simple FDP error
@@ -32,6 +36,16 @@ impl FDP {
         }
         FDP {
             shm,
+        }
+    }
+
+    pub fn read_physical_memory(&self, paddr: u64, buffer: &mut [u8]) -> Result<(), Box<dyn Error>> {
+        let buf_size: u32 = buffer.len().try_into().unwrap();
+        match unsafe {
+            FDP_ReadPhysicalMemory(self.shm, buffer.as_mut_ptr(), buf_size, paddr)
+        } {
+            false => Err(Box::new(FDPError{})),
+            true => Ok(()),
         }
     }
 
