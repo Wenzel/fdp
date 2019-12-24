@@ -1,7 +1,8 @@
+use std::error::Error;
 use std::ffi::CString;
 
-use fdp_sys::{FDP_SHM, FDP_CreateSHM, FDP_Init, FDP_Pause, FDP_Resume};
 use custom_error::custom_error;
+use fdp_sys::{FDP_CreateSHM, FDP_Init, FDP_Pause, FDP_Resume, FDP_SHM};
 
 
 // Define simple FDP error
@@ -29,16 +30,16 @@ impl FDP {
         }
     }
 
-    pub fn pause(&self) -> Result<(), FDPError> {
+    pub fn pause(&self) -> Result<(), Box<dyn Error>> {
         match unsafe { FDP_Pause(self.shm) } {
-            false => Err(FDPError{}),
+            false => Err(Box::new(FDPError{})),
             true => Ok(()),
         }
     }
 
-    pub fn resume(&self) -> Result<(), FDPError> {
+    pub fn resume(&self) -> Result<(), Box<dyn Error>> {
         match unsafe { FDP_Resume(self.shm) } {
-            false => Err(FDPError{}),
+            false => Err(Box::new(FDPError{})),
             true => Ok(()),
         }
     }
