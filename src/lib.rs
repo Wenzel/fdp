@@ -1,3 +1,6 @@
+#[macro_use]
+extern crate log;
+
 use std::error::Error;
 use std::ffi::CString;
 
@@ -17,10 +20,12 @@ impl FDP {
     pub fn new(vm_name: &str) -> Self {
         let c_vm_name = CString::new(vm_name).unwrap();
         // create SHM
+        info!("create SHM {}", vm_name);
         let shm = unsafe {
             FDP_CreateSHM(c_vm_name.into_raw())
         };
         // init FDP
+        info!("initialize FDP");
         let res = unsafe { FDP_Init(shm) };
         if res == false {
             panic!("Failed to init FDP");
