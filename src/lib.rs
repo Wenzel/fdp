@@ -8,7 +8,7 @@ use std::convert::TryInto;
 use custom_error::custom_error;
 use fdp_sys::{
     FDP_CreateSHM, FDP_Init, FDP_Pause, FDP_Resume, FDP_SHM,
-    FDP_ReadPhysicalMemory
+    FDP_ReadPhysicalMemory, FDP_GetPhysicalMemorySize
 };
 
 
@@ -60,6 +60,16 @@ impl FDP {
         match unsafe { FDP_Resume(self.shm) } {
             false => Err(Box::new(FDPError{})),
             true => Ok(()),
+        }
+    }
+
+    pub fn get_physical_memory_size(&self) -> Result<u64, Box<dyn Error>> {
+        let mut max_addr: u64 = 0;
+        match unsafe {
+            FDP_GetPhysicalMemorySize(self.shm, &mut max_addr)
+        } {
+            false => Err(Box::new(FDPError{})),
+            true => Ok(max_addr),
         }
     }
 }
