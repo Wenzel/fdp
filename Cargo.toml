@@ -3,11 +3,13 @@ name = "fdp"
 version = "0.1.0"
 authors = ["Mathieu Tarral <mathieu.tarral@protonmail.com>"]
 edition = "2018"
-repository = "https://github.com/Wenzel/fdp"
+description = "Safe bindings for libFDP (Fast Debugging Protocol)"
 readme = "README.md"
-keywords = ["FDP", "Introspection", "VirtualBox"]
-description = "Rust bindings for FDP (Fast Debugging Protocol)"
+homepage = "https://github.com/Wenzel/fdp"
+repository = "https://github.com/Wenzel/fdp"
 license = "GPL-3.0-only"
+keywords = ["FDP", "Introspection", "VirtualBox", "VMI"]
+categories = ["api-bindings"]
 
 [dependencies]
 log = "0.4.8"
