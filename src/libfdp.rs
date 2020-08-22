@@ -1,6 +1,6 @@
 use std::os::raw::c_char;
 
-use fdp_sys::FDP_SHM;
+use fdp_sys::{FDP_Register, FDP_SHM};
 use libloading::os::unix::Symbol as RawSymbol;
 use libloading::{Library, Symbol};
 
@@ -23,6 +23,13 @@ type FnReadPhysicalMemory = extern "C" fn(
     read_size: u32,
     physical_address: u64,
 ) -> bool;
+// FDP_ReadRegister
+type FnReadRegister = extern "C" fn(
+    p_shm: *mut FDP_SHM,
+    cpu_id: u32,
+    register_id: FDP_Register,
+    p_register_value: *mut u64,
+) -> bool;
 // FDP_GetPhysicalMemorySize
 type FnGetPhysicalMemorySize =
     extern "C" fn(p_shm: *mut FDP_SHM, p_physical_memory_size: *mut u64) -> bool;
@@ -36,6 +43,7 @@ pub struct LibFDP {
     pub pause: RawSymbol<FnPause>,
     pub resume: RawSymbol<FnResume>,
     pub read_physical_memory: RawSymbol<FnReadPhysicalMemory>,
+    pub read_register: RawSymbol<FnReadRegister>,
     pub get_physical_memory_size: RawSymbol<FnGetPhysicalMemorySize>,
 }
 
@@ -63,6 +71,9 @@ impl LibFDP {
             lib.get(b"FDP_ReadPhysicalMemory\0").unwrap();
         let read_physical_memory = read_physical_memory_sym.into_raw();
 
+        let read_register_sym: Symbol<FnReadRegister> = lib.get(b"FDP_ReadRegister\0").unwrap();
+        let read_register = read_register_sym.into_raw();
+
         let get_physical_memory_size_sym: Symbol<FnGetPhysicalMemorySize> =
             lib.get(b"FDP_GetPhysicalMemorySize\0").unwrap();
         let get_physical_memory_size = get_physical_memory_size_sym.into_raw();
@@ -75,6 +86,7 @@ impl LibFDP {
             pause,
             resume,
             read_physical_memory,
+            read_register,
             get_physical_memory_size,
         }
     }
