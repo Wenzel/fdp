@@ -13,6 +13,6 @@ categories = ["api-bindings"]
 
 [dependencies]
 log = "0.4.8"
-fdp-sys = "0.1.0"
+fdp-sys = "0.1.1"
 custom_error = "1.7.1"
 libloading = "0.6.1"
