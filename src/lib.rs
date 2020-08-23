@@ -10,6 +10,8 @@ use std::convert::TryInto;
 use std::error::Error;
 use std::ffi::CString;
 
+use num_traits::ToPrimitive;
+
 use custom_error::custom_error;
 use fdp_sys::{
     FDP_Register__FDP_CR0_REGISTER, FDP_Register__FDP_CR2_REGISTER, FDP_Register__FDP_CR3_REGISTER,
@@ -109,6 +111,20 @@ impl FDP {
         match success {
             false => Err(Box::new(FDPError {})),
             true => Ok(()),
+        }
+    }
+
+    pub fn read_register(
+        &self,
+        vcpu_id: u32,
+        register: RegisterType,
+    ) -> Result<u64, Box<dyn Error>> {
+        let mut value: u64 = 0;
+        let success =
+            (self.libfdp.read_register)(self.shm, vcpu_id, register.to_u16().unwrap(), &mut value);
+        match success {
+            false => Err(Box::new(FDPError {})),
+            true => Ok(value),
         }
     }
 
