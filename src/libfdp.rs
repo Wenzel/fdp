@@ -8,12 +8,14 @@ const LIBFDP_FILENAME: &'static str = "libFDP.so";
 // libFDP function signatures type alises
 // FDP_CreateSHM
 type FnCreateSHM = extern "C" fn(shm_name: *mut c_char) -> *mut FDP_SHM;
+// FDP_OpenSHM
+type FnOpenSHM = extern "C" fn(shm_name: *const ::std::os::raw::c_char) -> *mut FDP_SHM;
 // FDP_Init
-type FnInit = extern "C" fn(pShm: *mut FDP_SHM) -> bool;
+type FnInit = extern "C" fn(p_shm: *mut FDP_SHM) -> bool;
 // FDP_Pause
-type FnPause = extern "C" fn(pShm: *mut FDP_SHM) -> bool;
+type FnPause = extern "C" fn(p_shm: *mut FDP_SHM) -> bool;
 // FDP_Resume
-type FnResume = extern "C" fn(pShm: *mut FDP_SHM) -> bool;
+type FnResume = extern "C" fn(p_shm: *mut FDP_SHM) -> bool;
 // FDP_ReadPhysicalMemory
 type FnReadPhysicalMemory = extern "C" fn(
     p_shm: *mut FDP_SHM,
@@ -29,6 +31,7 @@ type FnGetPhysicalMemorySize =
 pub struct LibFDP {
     lib: Library,
     pub create_shm: RawSymbol<FnCreateSHM>,
+    pub open_shm: RawSymbol<FnOpenSHM>,
     pub init: RawSymbol<FnInit>,
     pub pause: RawSymbol<FnPause>,
     pub resume: RawSymbol<FnResume>,
@@ -43,6 +46,9 @@ impl LibFDP {
         // load symbols
         let create_shm_sym: Symbol<FnCreateSHM> = lib.get(b"FDP_CreateSHM\0").unwrap();
         let create_shm = create_shm_sym.into_raw();
+
+        let open_shm_sym: Symbol<FnOpenSHM> = lib.get(b"FDP_OpenSHM\0").unwrap();
+        let open_shm = open_shm_sym.into_raw();
 
         let init_sym: Symbol<FnInit> = lib.get(b"FDP_Init\0").unwrap();
         let init = init_sym.into_raw();
@@ -64,6 +70,7 @@ impl LibFDP {
         LibFDP {
             lib,
             create_shm,
+            open_shm,
             init,
             pause,
             resume,
