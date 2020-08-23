@@ -26,7 +26,7 @@ impl FDP {
         let libfdp = unsafe { LibFDP::new() };
         // create SHM
         info!("create SHM {}", vm_name);
-        let shm = (libfdp.create_shm)(c_vm_name.into_raw());
+        let shm = (libfdp.open_shm)(c_vm_name.into_raw());
 
         // init FDP
         info!("initialize FDP");
