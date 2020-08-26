@@ -1,6 +1,7 @@
 # fdp
 
 ![](https://github.com/Wenzel/fdp/workflows/Build/badge.svg)
+[![Crates.io](https://img.shields.io/crates/v/fdp.svg)](https://crates.io/crates/fdp)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
 > Rust bindings for FDP library
