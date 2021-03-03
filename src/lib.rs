@@ -84,9 +84,9 @@ pub struct FDP {
 }
 
 impl FDP {
-    pub fn new(vm_name: &str) -> Self {
-        let c_vm_name = CString::new(vm_name).unwrap();
-        let libfdp = unsafe { LibFDP::new() };
+    pub fn new(vm_name: &str) -> Result<Self, Box<dyn Error>> {
+        let c_vm_name = CString::new(vm_name)?;
+        let libfdp = unsafe { LibFDP::new()? };
         // create SHM
         info!("create SHM {}", vm_name);
         let shm = (libfdp.open_shm)(c_vm_name.into_raw());
@@ -97,7 +97,7 @@ impl FDP {
         if res == false {
             panic!("Failed to init FDP");
         }
-        FDP { shm, libfdp }
+        Ok(FDP { shm, libfdp })
     }
 
     pub fn read_physical_memory(
