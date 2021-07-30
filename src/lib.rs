@@ -95,7 +95,7 @@ impl FDP {
         info!("initialize FDP");
         let res = (libfdp.init)(shm);
         if !res {
-            return Err(Box::new(FDPError{}))
+            return Err(Box::new(FDPError {}));
         }
         Ok(FDP { shm, libfdp })
     }
