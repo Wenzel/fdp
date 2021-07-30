@@ -1,8 +1,33 @@
 name: Build
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+  pull_request:
 
 jobs:
+  format:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Install stable toolchain with rustfmt
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          components: rustfmt
+
+      - uses: actions/checkout@v1
+
+      - name: Rustfmt check
+        uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: -- --check
+
   build:
 
     runs-on: ubuntu-latest
@@ -21,3 +46,35 @@ jobs:
       run: cargo build
     - name: Run tests
       run: cargo test
+
+  publish:
+    needs: [format, build]
+    runs-on: ubuntu-20.04
+
+    # publish on crates.io
+    # only if push on master, and tag is 'v*'
+    # this should be triggered by cargo release, which creates a new tag and pushes to the repo
+    # cargo release --no-dev-version --skip-publish minor
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Clone Icebox repository
+        run: git clone https://github.com/thalium/icebox --depth 1
+      - name: Compile and install FDP library
+        run: |
+          cd icebox/src/FDP
+          g++ -std=c++11 -shared -fPIC FDP.cpp -o libFDP.so
+          sudo cp include/* /usr/local/include
+          sudo cp libFDP.so /usr/local/lib
+
+      - uses: actions/checkout@v1
+
+      - name: install stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+
+      - name: Publish
+        shell: bash
+        run: |
+          cargo publish --token ${{ secrets.CRATES_TOKEN }}
