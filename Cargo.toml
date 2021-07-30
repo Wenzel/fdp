@@ -18,3 +18,9 @@ custom_error = "1.7.1"
 libloading = "0.6.1"
 enum-primitive-derive = "^0.1"
 num-traits = "^0.1"
+
+[package.metadata.release]
+# releases are managed by cargo release, but publication is done on the CI
+# this metadata prevents a misuse when --skip-publish flag is missing from cargo
+# release command line
+disable-publish = true
