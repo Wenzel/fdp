@@ -5,7 +5,7 @@ use libloading::os::unix::Symbol as RawSymbol;
 use libloading::{Library, Symbol};
 use std::error::Error;
 
-const LIBFDP_FILENAME: &'static str = "libFDP.so";
+const LIBFDP_FILENAME: &str = "libFDP.so";
 // libFDP function signatures type alises
 // FDP_CreateSHM
 type FnCreateSHM = extern "C" fn(shm_name: *mut c_char) -> *mut FDP_SHM;
