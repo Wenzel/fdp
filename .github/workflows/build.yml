@@ -28,27 +28,80 @@ jobs:
           command: fmt
           args: -- --check
 
-  build:
+  build_linux:
 
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
+      with:
+        path: fdp
+
     - name: Clone Icebox repository
-      run: git clone https://github.com/thalium/icebox --depth 1
+      uses: actions/checkout@v2
+      with:
+        repository: thalium/icebox
+        path: icebox
+
     - name: Compile and install FDP library
       run: |
-        cd icebox/src/FDP
+        cd src/FDP
         g++ -std=c++11 -shared -fPIC FDP.cpp -o libFDP.so
         sudo cp include/* /usr/local/include
         sudo cp libFDP.so /usr/local/lib
+      working-directory: icebox
+
     - name: Build
       run: cargo build
+      working-directory: fdp
+
     - name: Run tests
       run: cargo test
+      working-directory: fdp
+
+  build_windows:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        path: fdp
+      
+    - name: Clone Icebox repository
+      uses: actions/checkout@v2
+      with:
+        repository: thalium/icebox
+        path: icebox
+
+    # adds cl.exe in the PATH
+    - name: Setup command prompt for Microsoft Visual C++
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Compile and install FDP library
+      run: |
+        cl /LD FDP.cpp /link /out:libFDP.dll
+        New-Item -Path "$Env:ProgramFiles\FDP" -ItemType "directory"
+        copy libFDP.dll "$Env:ProgramFiles\FDP"
+        copy "include\*" "$Env:ProgramFiles\FDP"
+        dir "$Env:ProgramFiles\FDP"
+      working-directory: icebox/src/FDP
+
+    - name: Install Clang
+      run: choco install llvm
+
+    - name: Build
+      run: cargo build
+      working-directory: fdp
+      env:
+        BINDGEN_EXTRA_CLANG_ARGS: -I"C:\Program Files\FDP" -L"C:\Program Files\FDP"
+
+    - name: Run tests
+      run: cargo test
+      working-directory: fdp
 
   publish:
-    needs: [format, build]
+    needs: [format, build_linux, build_windows]
     runs-on: ubuntu-20.04
 
     # publish on crates.io
