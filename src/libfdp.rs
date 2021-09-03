@@ -2,10 +2,10 @@ use std::os::raw::c_char;
 
 use fdp_sys::{FDP_Register, FDP_SHM};
 use libloading::os::unix::Symbol as RawSymbol;
-use libloading::{Library, Symbol};
+use libloading::{library_filename, Library, Symbol};
 use std::error::Error;
 
-const LIBFDP_FILENAME: &str = "libFDP.so";
+const LIBFDP_BASENAME: &str = "libFDP";
 // libFDP function signatures type alises
 // FDP_CreateSHM
 type FnCreateSHM = extern "C" fn(shm_name: *mut c_char) -> *mut FDP_SHM;
@@ -50,8 +50,9 @@ pub struct LibFDP {
 
 impl LibFDP {
     pub unsafe fn new() -> Result<Self, Box<dyn Error>> {
-        info!("Loading {}", LIBFDP_FILENAME);
-        let lib = Library::new(LIBFDP_FILENAME)?;
+        let libfdp_filename = library_filename(LIBFDP_BASENAME);
+        info!("Loading {}", libfdp_filename.to_str().unwrap());
+        let lib = Library::new(libfdp_filename)?;
         // load symbols
         let create_shm_sym: Symbol<FnCreateSHM> = lib.get(b"FDP_CreateSHM\0")?;
         let create_shm = create_shm_sym.into_raw();
