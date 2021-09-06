@@ -90,6 +90,9 @@ impl FDP {
         // create SHM
         info!("create SHM {}", vm_name);
         let shm = (libfdp.open_shm)(c_vm_name.into_raw());
+        if shm.is_null() {
+            return Err(Box::new(FDPError {}));
+        }
 
         // init FDP
         info!("initialize FDP");
