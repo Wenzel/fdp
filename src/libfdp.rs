@@ -1,7 +1,10 @@
 use std::os::raw::c_char;
 
 use fdp_sys::{FDP_Register, FDP_SHM};
+#[cfg(unix)]
 use libloading::os::unix::Symbol as RawSymbol;
+#[cfg(windows)]
+use libloading::os::windows::Symbol as RawSymbol;
 use libloading::{library_filename, Library, Symbol};
 use std::error::Error;
 
