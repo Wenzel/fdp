@@ -45,11 +45,10 @@ jobs:
 
     - name: Compile and install FDP library
       run: |
-        cd src/FDP
         g++ -std=c++11 -shared -fPIC FDP.cpp -o libFDP.so
         sudo cp include/* /usr/local/include
         sudo cp libFDP.so /usr/local/lib
-      working-directory: icebox
+      working-directory: icebox/src/FDP
 
     - name: Build
       run: cargo build
@@ -95,10 +94,6 @@ jobs:
       working-directory: fdp
       env:
         BINDGEN_EXTRA_CLANG_ARGS: -I"C:\Program Files\FDP" -L"C:\Program Files\FDP"
-
-    - name: Run tests
-      run: cargo test
-      working-directory: fdp
 
   publish:
     needs: [format, build_linux, build_windows]
