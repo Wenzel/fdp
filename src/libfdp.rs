@@ -8,7 +8,7 @@ use libloading::os::windows::Symbol as RawSymbol;
 use libloading::{library_filename, Library, Symbol};
 use std::error::Error;
 
-const LIBFDP_BASENAME: &str = "libFDP";
+const LIBFDP_BASENAME: &str = "FDP";
 // libFDP function signatures type alises
 // FDP_CreateSHM
 type FnCreateSHM = extern "C" fn(shm_name: *mut c_char) -> *mut FDP_SHM;
